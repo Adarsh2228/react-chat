@@ -1,29 +1,36 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import QRCode from "qrcode.react";
 import useConversationsStore from "stores/ConversationsStore";
 
 const ChatHeader = () => {
   const [showQRCode, setShowQRCode] = useState(false);
+  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [link, setLink] = useState('');
   const conversation = useConversationsStore(
     (state) => state.selectedConversation
   );
   const chatHistory = useConversationsStore((state) => state.messages);
 
-  useEffect(() => {
-    // Log the data to ensure it's being fetched correctly
-    console.log("Conversation:", conversation);
-    console.log("Chat History:", chatHistory);
-  }, [conversation, chatHistory]);
-
   const handleExportClick = () => {
     setShowQRCode((prev) => !prev);
   };
 
-  // Ensure chatHistory is being properly formatted
-  const exportData = conversation && chatHistory ? JSON.stringify(chatHistory) : '';
+  const handleLinkInputToggle = () => {
+    setShowLinkInput((prev) => !prev);
+  };
 
-  // Optionally, add a check to handle large data
-  const isDataTooLarge = exportData.length > 3000; // Example threshold for large data
+  const handleLinkChange = (e) => {
+    setLink(e.target.value);
+  };
+
+  const handleLinkSubmit = () => {
+    // Handle the link submission logic
+    console.log("Submitted Link:", link);
+    setShowLinkInput(false);
+  };
+
+  const exportData = conversation && chatHistory ? JSON.stringify(chatHistory) : '';
+  const isDataTooLarge = exportData.length > 3000;
   const truncatedData = isDataTooLarge ? exportData.substring(0, 3000) : exportData;
 
   return (
@@ -35,7 +42,6 @@ const ChatHeader = () => {
             alt="User profile"
             className="profile-picture rounded-full h-10 w-10 object-cover mr-4"
           />
-
           <h2 className="user-full-name text-white flex-grow">
             {conversation?.fullName}
           </h2>
@@ -52,12 +58,39 @@ const ChatHeader = () => {
           {showQRCode && exportData && (
             <div className="ml-4">
               <QRCode
-                value={truncatedData} // Use truncated data if too large
-                size={200} // Increase size if necessary
+                value={truncatedData}
+                size={200}
                 level="H"
                 includeMargin={true}
                 className="qr-code"
               />
+            </div>
+          )}
+
+          {/* Add Meeting Link Button */}
+          <button
+            className="ml-4 btn btn-secondary"
+            onClick={handleLinkInputToggle}
+          >
+            {showLinkInput ? "Cancel" : "Add Meeting Link"}
+          </button>
+
+          {/* Link Input Modal */}
+          {showLinkInput && (
+            <div className="ml-4 flex items-center">
+              <input
+                type="text"
+                value={link}
+                onChange={handleLinkChange}
+                placeholder="Enter Zoom or Google Meet link"
+                className="input-field"
+              />
+              <button
+                className="btn btn-primary ml-2"
+                onClick={handleLinkSubmit}
+              >
+                Submit
+              </button>
             </div>
           )}
         </div>
