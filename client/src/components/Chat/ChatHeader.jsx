@@ -26,10 +26,7 @@ const ChatHeader = () => {
 
   const handleLinkSubmit = () => {
     if (link) {
-<<<<<<< HEAD
-      // Redirect to the provided link
-=======
->>>>>>> 265f418 (sahi hai)
+
       window.location.href = link;
     } else {
       alert("Please enter a valid link.");
