@@ -13,6 +13,7 @@ const variants = {
 
 const Dropmenu = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [font, setFont] = useState("sans-serif");
   const logout = useLogout();
   const ref = useRef();
   useClickOutside(ref, () => {
@@ -21,8 +22,14 @@ const Dropmenu = () => {
 
   const user = useAuthStore((state) => state.user);
 
+  const handleFontChange = (e) => {
+    const selectedFont = e.target.value;
+    setFont(selectedFont);
+    document.body.style.fontFamily = selectedFont;
+  };
+
   return (
-    <div ref={ref}>
+    <div ref={ref} style={{ fontFamily: font }}>
       <div
         type="button"
         className={`relative btn btn-circle bg-base-300 hover:bg-base-100 border-transparent ${
@@ -61,20 +68,29 @@ const Dropmenu = () => {
               <img
                 src={user.profilePic}
                 alt="Profile Picture"
-                className="w-24 h-w-24 rounded-xl mx-auto"
+                className="w-24 h-24 rounded-xl mx-auto"
               />
               <span className="text-xl">{user.fullName}</span>
               <span>@{user.username}</span>
             </div>
           </label>
           <div className="divider my-0"></div>
-          <label
-            className="block rounded-xl px-4 py-2 text-sm text-red-500 hover:bg-base-200 cursor-pointer"
-            role="menuitem"
-            onClick={logout}
-          >
-            Logout
-          </label>
+
+          <div className="block text-center rounded-xl px-4 py-2 text-sm hover:bg-base-200 cursor-pointer">
+            <h3 className="text-lg font-semibold mb-2">Select Font</h3>
+            <select
+              className="bg-base-100 border border-slate-600 rounded-xl py-1 px-2"
+              onChange={handleFontChange}
+              value={font}
+            >
+              <option value="sans-serif">Sans-serif</option>
+              <option value="Arial, sans-serif">Arial</option>
+              <option value="'Courier New', Courier, monospace">Courier New</option>
+              <option value="Georgia, serif">Georgia</option>
+              <option value="'Times New Roman', Times, serif">Times New Roman</option>
+              <option value="Verdana, sans-serif">Verdana</option>
+            </select>
+          </div>
           <div className="divider my-0"></div>
 
           <label
@@ -82,6 +98,15 @@ const Dropmenu = () => {
             role="menuitem"
           >
             <ToggleTheme />
+          </label>
+          <div className="divider my-0"></div>
+
+          <label
+            className="block rounded-xl px-4 py-2 text-sm text-red-500 hover:bg-base-200 cursor-pointer"
+            role="menuitem"
+            onClick={logout}
+          >
+            Logout
           </label>
         </div>
       </motion.div>
