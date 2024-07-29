@@ -6,6 +6,7 @@ const ChatHeader = () => {
   const [showQRCode, setShowQRCode] = useState(false);
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [link, setLink] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const conversation = useConversationsStore(
     (state) => state.selectedConversation
   );
@@ -25,12 +26,44 @@ const ChatHeader = () => {
 
   const handleLinkSubmit = () => {
     if (link) {
+<<<<<<< HEAD
       // Redirect to the provided link
+=======
+>>>>>>> 265f418 (sahi hai)
       window.location.href = link;
     } else {
       alert("Please enter a valid link.");
     }
     setShowLinkInput(false);
+  };
+
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  const handleFileUpload = async () => {
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
+
+      try {
+        const response = await fetch('/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (response.ok) {
+          alert('File uploaded successfully!');
+        } else {
+          alert('File upload failed.');
+        }
+      } catch (error) {
+        console.error('Error uploading file:', error);
+        alert('Error uploading file.');
+      }
+    } else {
+      alert("Please select a file.");
+    }
   };
 
   const exportData = conversation && chatHistory ? JSON.stringify(chatHistory) : '';
@@ -97,6 +130,26 @@ const ChatHeader = () => {
               </button>
             </div>
           )}
+
+          {/* File Upload Button */}
+          <input
+            type="file"
+            id="file-upload"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <label
+            htmlFor="file-upload"
+            className="ml-4 btn btn-secondary cursor-pointer"
+          >
+            Upload File
+          </label>
+          <button
+            className="ml-2 btn btn-primary"
+            onClick={handleFileUpload}
+          >
+            Send File
+          </button>
         </div>
       )}
     </>
