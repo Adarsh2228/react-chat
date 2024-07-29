@@ -24,8 +24,12 @@ const ChatHeader = () => {
   };
 
   const handleLinkSubmit = () => {
-    // Handle the link submission logic
-    console.log("Submitted Link:", link);
+    if (link) {
+      // Redirect to the provided link
+      window.location.href = link;
+    } else {
+      alert("Please enter a valid link.");
+    }
     setShowLinkInput(false);
   };
 
